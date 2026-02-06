@@ -9,8 +9,8 @@ TEST(StoreTest, PutGetResult){ // get should return the input string
 
     kv::Store store;
     std::string test_value_input = "test_value_john";
-    bool putResult = store.put("test_key","test_value_john");
-    ASSERT_TRUE(putResult);
+    bool put_result = store.put("test_key","test_value_john");
+    ASSERT_TRUE(put_result);
     std::optional<std::string> test_value_output = store.get("test_key");
     ASSERT_TRUE(test_value_output.has_value());
     EXPECT_EQ(test_value_input, test_value_output.value());
@@ -29,8 +29,8 @@ TEST(StoreTest, PutSize){ // size should return the size of the input string
 
     kv::Store store;
     std::string test_value_input = "test_value_john";
-    bool putResult = store.put("test_key","test_value_john");
-    ASSERT_TRUE(putResult);
+    bool put_result = store.put("test_key","test_value_john");
+    ASSERT_TRUE(put_result);
     std::size_t test_value_size = store.size("test_key");
     std::size_t size_output = test_value_input.size();
     EXPECT_EQ(test_value_size, size_output);
@@ -42,13 +42,13 @@ TEST(StoreTest, Erase){ // getting erased value should return empty string
     kv::Store store;
     std::string test_value_input = "test_value_john";
     std::string empty = "";
-    bool putResult = store.put("test_key","test_value_john");
-    ASSERT_TRUE(putResult);
-    bool eraseResult = store.erase("test_key");
-    ASSERT_TRUE(eraseResult);
-    std::optional<std::string> deletedGetValue = store.get("test_key");
-    ASSERT_FALSE(deletedGetValue.has_value());
-    EXPECT_EQ("",deletedGetValue);
+    bool put_result = store.put("test_key","test_value_john");
+    ASSERT_TRUE(put_result);
+    bool erase_result = store.erase("test_key");
+    ASSERT_TRUE(erase_result);
+    std::optional<std::string> deleted_get_value = store.get("test_key");
+    ASSERT_FALSE(deleted_get_value.has_value());
+    EXPECT_EQ("",deleted_get_value);
 
 }
 
@@ -57,10 +57,10 @@ TEST(StoreTest, OverWrite){
     kv::Store store;
     std::string test_value_input = "test_value_john";
     std::string other_test_value = "other_value_john";
-    bool firstPutResult = store.put("test_key", test_value_input);
-    bool secondPutResult = store.put("test_key",other_test_value);
-    ASSERT_TRUE(firstPutResult);
-    ASSERT_TRUE(secondPutResult);
+    bool first_put_result = store.put("test_key", test_value_input);
+    bool second_put_result = store.put("test_key",other_test_value);
+    ASSERT_TRUE(first_put_result);
+    ASSERT_TRUE(second_put_result);
     std::optional<std::string> stored_value = store.get("test_key");
     ASSERT_TRUE(stored_value.has_value());
     EXPECT_EQ(stored_value.value(),other_test_value);
