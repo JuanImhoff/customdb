@@ -21,12 +21,11 @@ namespace kv{
 
     bool Store::erase(const std::string& key){
         std::cout << key << std::endl;
-        return true;
+        return m_data.erase(key) > 0;
     }
 
-    std::size_t Store::size(const std::string& key){
-        std::cout << key << std::endl;
-        std::size_t size = 0;
+    std::size_t Store::size(){
+        std::size_t size = m_data.size();
         return size;
 
     }
