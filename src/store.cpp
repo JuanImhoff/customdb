@@ -6,7 +6,7 @@ namespace kv{
         return true;
     }
 
-    std::string Store::get(const std::string& key){
+    std::optional<std::string> Store::get(const std::string& key){
         std::cout << key << std::endl;
         return "default_return_value";
     }
