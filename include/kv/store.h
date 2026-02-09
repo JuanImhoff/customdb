@@ -3,6 +3,8 @@
 #include <iostream>
 #include <optional>
 #include <unordered_map>
+#include <shared_mutex>
+#include <mutex>
 
 namespace kv {
     class Store{
@@ -16,6 +18,7 @@ namespace kv {
 
         private:
             std::unordered_map<std::string,std::string> m_data;
+            std::shared_mutex m_mutex;
 
     };
 }
