@@ -5,6 +5,25 @@ TEST(SmokeTest, Basic){ // just testing the configuration
     EXPECT_EQ(1+1,2);
 }
 
+/*
+INITIAL STATE
+size is zero
+retrieving value return nullopt
+erasing returns false
+*/
+
+TEST(StoreTest, InitialState){
+    kv::Store store;
+    EXPECT_EQ(store.size(),0u);
+    ASSERT_FALSE(store.get("missing").has_value());
+    ASSERT_FALSE(store.erase("missing"));
+}
+
+/*
+PUT INSERTION
+Test that when inserting a value, retrieving gives the same value
+*/
+
 TEST(StoreTest, PutGetResult){ // get should return the input string
 
     kv::Store store;
@@ -17,6 +36,20 @@ TEST(StoreTest, PutGetResult){ // get should return the input string
 
 }
 
+/*
+Multiple keys, put and retrieve
+*/
+
+/*
+
+GET
+Test:
+retrieveing a value: already tested in PUT tests
+retrieving a non-existent value
+retrieving an empty string "" should return the empty string
+
+*/
+
 TEST(StoreTest, GetInexistingKey){ // get a non-existent key should return nullopt
 
     kv::Store store;
@@ -24,6 +57,19 @@ TEST(StoreTest, GetInexistingKey){ // get a non-existent key should return nullo
     ASSERT_FALSE(test_value.has_value());
 
 }
+
+TEST(StoreTest, EmptyStringValue){
+    kv::Store store;
+    bool put_result = store.put("test_key","");
+    ASSERT_TRUE(put_result);
+    EXPECT_EQ(store.size(),1u);
+    ASSERT_TRUE(store.get("test_key").has_value());
+    EXPECT_EQ(store.get("test_key").value(),"");
+}
+
+/*
+SIZE: put a certain number of values with dinstinc keys increases the size accordingly.
+*/
 
 TEST(StoreTest, PutSize){ // size should return the size of the input string
     std::size_t test_size = 10;
@@ -40,11 +86,10 @@ TEST(StoreTest, PutSize){ // size should return the size of the input string
 
 }
 
-TEST(StoreTest, Erase){ // getting erased value should return empty string
+TEST(StoreTest, EraseExistingKey){ // getting erased value should return nullopt
     
     kv::Store store;
     std::string test_value_input = "test_value_john";
-    std::string empty = "";
     bool put_result = store.put("test_key","test_value_john");
     ASSERT_TRUE(put_result);
     bool erase_result = store.erase("test_key");
@@ -54,19 +99,63 @@ TEST(StoreTest, Erase){ // getting erased value should return empty string
 
 }
 
+TEST(StoreTest, EraseMissingKey){
+    kv::Store store;
+    std::string empty = "";
+    bool put_result = store.put("test_key",empty);
+    ASSERT_TRUE(put_result);
+    std::optional<std::string> empty_get_value = store.get("test_key");
+    ASSERT_TRUE(empty_get_value.has_value());
+    EXPECT_EQ(empty_get_value, empty);
+}
+
+/*
+OVERWRITE: when doing overwrite the value returned should be the second
+*/
+
 TEST(StoreTest, OverWrite){
     
     kv::Store store;
     std::string test_value_input = "test_value_john";
     std::string other_test_value = "other_value_john";
     bool first_put_result = store.put("test_key", test_value_input);
+    size_t expected_size = store.size();
     bool second_put_result = store.put("test_key",other_test_value);
+    EXPECT_EQ(store.size(),expected_size); // size is unchanged by overwrote
     ASSERT_TRUE(first_put_result);
     ASSERT_FALSE(second_put_result);
     std::optional<std::string> stored_value = store.get("test_key");
     ASSERT_TRUE(stored_value.has_value());
     EXPECT_EQ(stored_value.value(),other_test_value);
 
+
+}
+
+/*
+INDEPENDENT STORES
+Test the independence of the behavior of two kv::Store objects
+*/
+
+TEST(StoreTest, TwoStoresAreIndependent){
+    kv::Store store_a;
+    kv::Store store_b;
+    // put-get
+    bool put_result_a = store_a.put("test_key","test_value_a");
+    bool put_result_b = store_b.put("test_key","test_value_b");
+    ASSERT_TRUE(put_result_a);
+    ASSERT_TRUE(put_result_b);
+    ASSERT_TRUE(store_a.get("test_key").has_value());
+    ASSERT_TRUE(store_b.get("test_key").has_value());
+    EXPECT_EQ(store_a.get("test_key").value(),"test_value_a");
+    EXPECT_EQ(store_b.get("test_key").value(),"test_value_b");
+    EXPECT_EQ(store_a.size(),1u);
+    EXPECT_EQ(store_b.size(),1u);
+    // erase one value
+    bool erase_result_a = store_a.erase("test_key");
+    ASSERT_TRUE(erase_result_a);
+    ASSERT_TRUE(store_b.get("test_key").has_value());
+    EXPECT_EQ(store_b.get("test_key").value(),"test_value_b");
+    EXPECT_FALSE(store_a.get("test_key").has_value());
 
 }
 
