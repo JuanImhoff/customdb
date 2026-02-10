@@ -1,0 +1,17 @@
+
+
+**************************************************************************
+                                 HELP INFO
+**************************************************************************
+
+Commands:
+
+SET <key> <value> : store a key-value pair in storage
+GET <key> : print the value associated to the key
+DEL <key> : erase a key-value pair from the storage
+SIZE : print the size (# of keys) in the storage
+HELP : display help
+EXIT : exit app
+TABLE : display the whole storage as a table
+
+
