@@ -159,3 +159,38 @@ TEST(StoreTest, TwoStoresAreIndependent){
 
 }
 
+/*
+LIST KEYS
+Test the listing keys function
+*/
+
+TEST(StoreTest, ListKeys){
+    std::size_t test_size = 10;
+    kv::Store store;
+    std::string test_value_input = "test_value_john";
+    std::string it_test_key;
+    std::list<std::string> test_list_of_keys;
+    std::list<std::string> list_of_keys;
+    for (size_t i=0;i<test_size;i++){
+        it_test_key = "test_key_" + std::to_string(i);
+        test_list_of_keys.push_back(it_test_key);
+        bool put_result = store.put(it_test_key,"test_value_john");
+        ASSERT_TRUE(put_result);    
+    }
+    store.listKeys(list_of_keys);
+    // compare the two lists
+    bool same = true;
+    std::unordered_map<std::string,int> freq_map;
+    for (const auto& key : list_of_keys){
+        freq_map[key]++;
+    }
+    for (const auto& key : test_list_of_keys){
+        if (freq_map[key]-- <0){
+            same = false;
+        }
+    }
+    ASSERT_TRUE(same);
+
+
+}
+

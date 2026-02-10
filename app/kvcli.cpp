@@ -127,6 +127,17 @@ int handle_command(std::string &line, kv::Store& store){
         return 2;
     }
 
+    if (command == "DISPLAY"){
+        std::list<std::string> list_of_keys;
+        store.listKeys(list_of_keys);
+        for (auto& key : list_of_keys){
+            std::optional<std::string> value_opt = store.get(key);
+            if (value_opt.has_value()){
+                std::cout  << "| \033[31m" << std::setw(15)<< key << "\033[0m | " << "\033[33m" << std::setw(15) << value_opt.value() << "\033[0m | " << std::endl;
+            }
+        }
+        return 1;
+    }
 
     else{
         std::cout << "Unknow command" << std::endl;
