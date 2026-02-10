@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <shared_mutex>
 #include <mutex>
+#include <list>
 
 namespace kv {
     /**
@@ -33,6 +34,11 @@ namespace kv {
             * @return true if the value was erased, false if it was not there at first
             */
             bool erase(const std::string& key);
+            /**
+            * @brief get a list of the keys in the table
+            * @return void, modify as reference
+            */
+            void listKeys(std::list<std::string>& list_of_keys);
             /**
             * @brief return the number of elements stored
             * @return the size of the storage

@@ -10,7 +10,6 @@ namespace kv{
 
     std::optional<std::string> Store::get(const std::string& key){
         std::shared_lock lock(m_mutex);
-        std::cout << key << std::endl;
         auto it = m_data.find(key);
         if (it == m_data.end()){
             return std::nullopt;
@@ -25,6 +24,14 @@ namespace kv{
         std::unique_lock lock(m_mutex);
         std::cout << key << std::endl;
         return m_data.erase(key) > 0;
+    }
+
+    void Store::listKeys(std::list<std::string>& list_of_keys){
+        list_of_keys.clear();
+        for (auto it = m_data.begin(); it!= m_data.end(); it++){
+            list_of_keys.push_back(it->first);
+        }
+        return;
     }
 
     std::size_t Store::size(){
