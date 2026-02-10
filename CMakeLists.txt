@@ -85,6 +85,7 @@ target_link_libraries(customdb_tests
     PRIVATE
         GTest::gtest
         GTest::gtest_main
+        customdb
 )
 
 enable_warnings(customdb_tests)
