@@ -8,11 +8,10 @@
 #include <list>
 
 namespace kv {
+
     /**
-    * @brief Thread-safe in-memory key-value storage
-    *
-    *        Provides O(1) insert, lookup and erase
-    * @warning no persistency
+     * @brief struct object to keep storage access statistics
+     * Stores counts for all API calls, plus specific counts for successful get (hit_count) and missed get (miss_count)
     */
     struct Stats{
         std::size_t put_count=0;
@@ -21,6 +20,14 @@ namespace kv {
         std::size_t miss_count=0;
         std::size_t hit_count=0;    
     };
+
+    /**
+    * @brief Thread-safe in-memory key-value storage
+    *
+    *        Provides O(1) insert, lookup and erase
+    * @warning no persistency
+    */
+    
 
     class Store{
         public:
