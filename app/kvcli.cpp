@@ -9,6 +9,13 @@
 Helper functions: functions calling the store API to execute commands
 */
 
+//color strings
+std::string BLUE = "\033[34m";
+std::string RED = "\033[31m";
+std::string GREEN = "\033[32m";
+std::string YEL = "\033[33m";
+std::string RESCOL = "\033[0m";
+
 /*
 Handle a command: Parse a line and call helper functions to fulfil the command
 * CLI commands:
@@ -133,10 +140,20 @@ int handle_command(std::string &line, kv::Store& store){
         for (auto& key : list_of_keys){
             std::optional<std::string> value_opt = store.get(key);
             if (value_opt.has_value()){
-                std::cout  << "| \033[31m" << std::setw(15)<< key << "\033[0m | " << "\033[33m" << std::setw(15) << value_opt.value() << "\033[0m | " << std::endl;
+                std::cout  << "|" << RED << std::setw(15)<< key <<  YEL << "|" << std::setw(15) << value_opt.value() << RESCOL << "|" << std::endl;
             }
         }
         return 1;
+    }
+
+    if (command == "STATS"){
+        kv::Stats stats = store.getStats();
+        std::cout << BLUE << std::setw(15) << "put count :" << GREEN <<std::setw(5) <<stats.put_count << RESCOL << std::endl;  
+        std::cout << BLUE << std::setw(15) << "get count :" << GREEN <<std::setw(5) << stats.get_count << RESCOL << std::endl;  
+        std::cout << BLUE << std::setw(15) << "hit count :" << GREEN <<std::setw(5) << stats.hit_count << RESCOL << std::endl;  
+        std::cout << BLUE << std::setw(15) << "miss count :" << GREEN <<std::setw(5) << stats.miss_count << RESCOL << std::endl;  
+        std::cout << BLUE << std::setw(15) << "erase count :" << GREEN <<std::setw(5) << stats.erase_count << RESCOL << std::endl; 
+        return 1; 
     }
 
     else{
