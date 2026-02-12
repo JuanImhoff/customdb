@@ -37,6 +37,7 @@ namespace kv{
     }
 
     void Store::listKeys(std::list<std::string>& list_of_keys){
+        std::shared_lock lock(m_mutex);
         list_of_keys.clear();
         for (auto it = m_data.begin(); it!= m_data.end(); it++){
             list_of_keys.push_back(it->first);
