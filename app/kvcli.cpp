@@ -11,7 +11,7 @@ Helper functions: functions calling the store API to execute commands
 
 //color strings
 std::string BLUE = "\033[34m";
-std::string RED = "\033[31m";
+std::string RED = "\033[91m";
 std::string GREEN = "\033[32m";
 std::string YEL = "\033[33m";
 std::string RESCOL = "\033[0m";
@@ -41,7 +41,7 @@ int handle_command(std::string &line, kv::Store& store){
     if (command == "SET"){
         std::string key;
         if (!(iss >> key)){ // read the key, and display err if the key is missing
-            std::cout << "ERR Missing key" << std::endl;
+            std::cout << RED << "ERR Missing key" << RESCOL << std::endl;
             return 0;
         }
         // parse the value
@@ -62,19 +62,19 @@ int handle_command(std::string &line, kv::Store& store){
     if (command == "GET"){
         std::string key;
         if (!(iss >> key)){
-            std::cout << "ERR Missing key" << std::endl;
+            std::cout << RED << "ERR Missing key" << RESCOL << std::endl;
             return 0;
         }
         std::string rest;
         if (iss >> rest){
-            std::cout << "ERR key shouldn't have a space" << std::endl;
+            std::cout << RED << "ERR key shouldn't have a space" << RESCOL << std::endl;
             return 0;
         }
         else{ // call API get
             std::optional<std::string> value_opt = store.get(key);
             if (value_opt.has_value()){
                 std::string value = value_opt.value();
-                std::cout << "key: " << key << "| value: " << value << std::endl;
+                std::cout << std::setw(15) << "key: " << key << std::setw(15) << " | value: " << value << std::endl;
                 return 1;
             }
         }
@@ -83,28 +83,31 @@ int handle_command(std::string &line, kv::Store& store){
     if (command == "DEL"){
         std::string key;
         if (!(iss >> key)){
-            std::cout << "ERR Missing key" << std::endl;
+            std::cout << RED << "ERR Missing key" << RESCOL << std::endl;
             return 0;
         }
         std::string rest;
         if (iss >> rest){
-            std::cout << "ERR key shouldn't have a space" << std::endl;
+            std::cout << RED << "ERR key shouldn't have a space" << RESCOL << std::endl;
             return 0;
         }
         else{ // call API get
             std::optional<std::string> value_opt = store.get(key);
             bool erase_result = store.erase(key);
             if (erase_result){
-                std::cout << "value erased from storage" << std::endl;
+                std::cout << GREEN << "value erased from storage" << RESCOL << std::endl;
             }
             else{
-                std::cout << "key not in storage" << std::endl;
+                std::cout << RED << " ERR key not in storage" << RESCOL << std::endl;
             }
             if (value_opt.has_value()){
                 std::string value = value_opt.value();
                 std::cout << "deleted: key: " << key << "| value: " << value << std::endl;
+                return 1;
             }
-            return 1;
+            else{
+                return 0;
+            }
         }
     }
 
@@ -118,7 +121,7 @@ int handle_command(std::string &line, kv::Store& store){
         std:: fstream file("app/help.txt");
         
         if (!file.is_open()) {
-        std::cout << "Error opening file!" << std::endl;
+        std::cout << RED << "Error opening file!" << RESCOL << std::endl;
         return 0;
     }
 
@@ -140,7 +143,7 @@ int handle_command(std::string &line, kv::Store& store){
         for (auto& key : list_of_keys){
             std::optional<std::string> value_opt = store.get(key);
             if (value_opt.has_value()){
-                std::cout  << "|" << RED << std::setw(15)<< key <<  YEL << "|" << std::setw(15) << value_opt.value() << RESCOL << "|" << std::endl;
+                std::cout  << "|" << RED << std::setw(15)<< key << RESCOL << "|" <<YEL <<  std::setw(15) << value_opt.value() << RESCOL << "|" << std::endl;
             }
         }
         return 1;
@@ -157,7 +160,7 @@ int handle_command(std::string &line, kv::Store& store){
     }
 
     else{
-        std::cout << "Unknow command" << std::endl;
+        std::cout << RED << "Err Unknow command" << RESCOL << std::endl;
         return 0;
     }
 
@@ -173,16 +176,16 @@ Main CLI function
 
 */
 int main(){
-    std::cout << "app kv-cli starting" << std::endl;
+    std::cout << BLUE << "app kv-cli starting"<< RESCOL << std::endl;
     // get line
     std::string line;
     kv::Store store;
     while (true){
-        std::cout << "Enter command: " << std::endl;
+        std::cout << YEL << "Enter command: " << RESCOL << std::endl;
         std::getline(std::cin, line);
         int res = handle_command(line, store);
-        if (res ==1) std::cout << "command succeeded" << std::endl;
-        if (res==0) std::cout << "command failed" << std::endl;
+        if (res ==1) std::cout << GREEN << "command succeeded" << RESCOL << std::endl;
+        if (res==0) std::cout<< RED << "command failed" << std::endl;
         if (res==2) {
             std::cout << "exiting CLI" << std::endl;
             return 0;

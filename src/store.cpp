@@ -3,7 +3,7 @@
 namespace kv{
     bool Store::put(const std::string& key, const std::string& value){
         std::unique_lock lock(m_mutex);
-        std::cout << key << std::endl << value << std::endl;
+        // std::cout << key << std::endl << value << std::endl;
         auto [it, inserted] = m_data.insert_or_assign(key, value);
         m_stats.put_count++;
         return inserted;
@@ -26,7 +26,7 @@ namespace kv{
 
     bool Store::erase(const std::string& key){
         std::unique_lock lock(m_mutex);
-        std::cout << key << std::endl;
+        // std::cout << key << std::endl;
         if (m_data.erase(key) > 0){
             m_stats.erase_count++;
             return true;
