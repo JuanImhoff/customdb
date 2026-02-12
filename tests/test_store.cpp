@@ -190,7 +190,26 @@ TEST(StoreTest, ListKeys){
         }
     }
     ASSERT_TRUE(same);
+}
 
+TEST(StoreTest, Stats){
 
+    kv::Store store;
+    // do 2 gets (one missing and one ok), 1 put and 1 erase. assert the results
+    std::optional<std::string> miss_opt = store.get("test_key");
+    ASSERT_FALSE(miss_opt.has_value());
+    bool put_result = store.put("test_key","test_value");
+    ASSERT_TRUE(put_result);
+    std::optional<std::string> get_value = store.get("test_key");
+    ASSERT_TRUE(get_value.has_value());
+    bool erase_result = store.erase("test_key");
+    ASSERT_TRUE(erase_result);
+    // check that the counts correspond.
+    kv::Stats stats = store.getStats();
+    EXPECT_EQ(stats.put_count, 1u);
+    EXPECT_EQ(stats.get_count, 2);
+    EXPECT_EQ(stats.hit_count, 1u);
+    EXPECT_EQ(stats.miss_count, 1u);
+    EXPECT_EQ(stats.erase_count, 1u);
 }
 

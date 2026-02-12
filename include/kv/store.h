@@ -14,6 +14,14 @@ namespace kv {
     *        Provides O(1) insert, lookup and erase
     * @warning no persistency
     */
+    struct Stats{
+        std::size_t put_count=0;
+        std::size_t get_count=0;
+        std::size_t erase_count=0;
+        std::size_t miss_count=0;
+        std::size_t hit_count=0;    
+    };
+
     class Store{
         public:
             Store(){m_data.reserve(1024);} // in prod one shouldn't use this default constructor, but set the reserve size
@@ -44,10 +52,16 @@ namespace kv {
             * @return the size of the storage
             */
             std::size_t size();
+            /**
+            * @brief get stats of storage usage
+            * @return a Stats struct with statistic data (uints)
+            */
+            Stats getStats(){return m_stats;};
 
         private:
             std::unordered_map<std::string,std::string> m_data;
             std::shared_mutex m_mutex;
+            Stats m_stats;
 
     };
 }
