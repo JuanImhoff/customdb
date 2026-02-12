@@ -27,8 +27,13 @@ namespace kv{
     bool Store::erase(const std::string& key){
         std::unique_lock lock(m_mutex);
         std::cout << key << std::endl;
-        m_stats.erase_count++;
-        return m_data.erase(key) > 0;
+        if (m_data.erase(key) > 0){
+            m_stats.erase_count++;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     void Store::listKeys(std::list<std::string>& list_of_keys){
